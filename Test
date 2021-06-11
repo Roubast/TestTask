@@ -1,0 +1,256 @@
+from tkinter import *
+
+def ErrorClose():
+    global errorOcc, error
+    errorOcc = False
+    error.destroy()
+
+def ButCreateObstacles():
+    global CreateObstacles, CreateRobot, CreateTarget, ClearGrid, StartSim, SizeChange, robot, target, clicked
+    CreateObstacles['text'] = 'Расставить \n препятствия'
+    CreateObstacles['command'] = PlaceObstacles
+    SizeChange['state'] = NORMAL
+    CreateRobot['state'] = NORMAL
+    CreateTarget['state'] = NORMAL
+    ClearGrid['state'] = NORMAL
+    if robot and target and clicked:
+        StartSim['state'] = NORMAL
+    
+def ButCreateRobot():
+    global CreateObstacles, CreateRobot, CreateTarget, ClearGrid, StartSim, SizeChange, robot, target, clicked
+    CreateRobot['text'] = 'Поместить \n робота'
+    CreateRobot['command'] = PlaceRobot
+    SizeChange['state'] = NORMAL
+    CreateObstacles['state'] = NORMAL
+    CreateTarget['state'] = NORMAL
+    ClearGrid['state'] = NORMAL
+    if robot and target and clicked:
+        StartSim['state'] = NORMAL
+    
+def ButCreateTarget():
+    global CreateObstacles, CreateRobot, CreateTarget, ClearGrid, StartSim, SizeChange, robot, target, clicked
+    CreateTarget['text'] = 'Установить \n цель'
+    CreateTarget['command'] = PlaceTarget
+    SizeChange['state'] = NORMAL
+    CreateRobot['state'] = NORMAL
+    CreateObstacles['state'] = NORMAL
+    ClearGrid['state'] = NORMAL
+    if robot and target and clicked:
+        StartSim['state'] = NORMAL
+
+def ObstaclesClick(event):
+    global c, clicked, robot, target, error, errorLabel, errorOcc
+    ids = c.find_withtag(CURRENT)[0]
+    if ids != robot and ids != target:
+        if ids not in clicked:
+            c.itemconfig(CURRENT, fill="gray")
+            clicked.add(ids)
+        else:
+            c.itemconfig(CURRENT, fill="white")
+            clicked.remove(ids)
+    else:
+        if not errorOcc:
+            errorOcc = True
+            error = Tk()
+            error.title('Ошибка!')
+            errorLabel = Label(error, height = 1, width = 50)
+            errorLabel.pack(padx = 5, pady = 5)
+            error.protocol("WM_DELETE_WINDOW", ErrorClose)
+        errorLabel['text'] = 'Выбрано некорректное расположение препятствия!'
+    c.update()
+
+def PlaceObstacles():
+    global c, clicked, CreateObstacles, CreateRobot, CreateTarget, ClearGrid, StartSim, SizeChange
+    c.bind("<Button-1>", ObstaclesClick)
+    CreateObstacles['text'] = 'Подтвердить \n расположение \n препятствий'
+    CreateObstacles['command'] = lambda:[c.unbind("<Button-1>"), ButCreateObstacles()]
+    SizeChange['state'] = DISABLED
+    CreateRobot['state'] = DISABLED
+    CreateTarget['state'] = DISABLED
+    ClearGrid['state'] = DISABLED
+    StartSim['state'] = DISABLED
+
+def RobotClick(event):
+    global c, robot, clicked, target, error, errorLabel, errorOcc
+    ids = c.find_withtag(CURRENT)[0]
+    if ids not in clicked and ids != target:
+        if robot:
+            c.itemconfig(robot, fill = "white")
+            robot = 0
+        c.itemconfig(CURRENT, fill="blue")
+        robot = ids
+    else:
+        if not errorOcc:
+            errorOcc = True
+            error = Tk()
+            error.title('Ошибка!')
+            errorLabel = Label(error, height = 1, width = 50)
+            errorLabel.pack(padx = 5, pady = 5)
+            error.protocol("WM_DELETE_WINDOW", ErrorClose)
+        errorLabel['text'] = 'Выбрано некорректное расположение робота!'
+    c.update()
+
+def PlaceRobot():
+    global c, robot, CreateObstacles, CreateRobot, CreateTarget, ClearGrid, StartSim, SizeChange
+    c.bind("<Button-1>", RobotClick)
+    if robot:
+        c.itemconfig(robot, fill = "white")
+        robot = 0
+    CreateRobot['text'] = 'Подтвердить \n расположение \n робота'
+    CreateRobot['command'] = lambda:[c.unbind("<Button-1>"), ButCreateRobot()]
+    SizeChange['state'] = DISABLED
+    CreateObstacles['state'] = DISABLED
+    CreateTarget['state'] = DISABLED
+    ClearGrid['state'] = DISABLED
+    StartSim['state'] = DISABLED
+
+def TargetClick(event):
+    global c, target, clicked, robot, error, errorLabel, errorOcc
+    ids = c.find_withtag(CURRENT)[0]
+    if ids not in clicked and ids != robot:
+        if target:
+            c.itemconfig(target, fill = "white")
+            target = 0
+        c.itemconfig(CURRENT, fill="green")
+        target = ids
+    else:
+        if not errorOcc:
+            errorOcc = True
+            error = Tk()
+            error.title('Ошибка!')
+            errorLabel = Label(error, height = 1, width = 50)
+            errorLabel.pack(padx = 5, pady = 5)
+            error.protocol("WM_DELETE_WINDOW", ErrorClose)
+        errorLabel['text'] = 'Выбрано некорректное расположение цели!'
+    c.update()
+
+def PlaceTarget():
+    global c, target, CreateObstacles, CreateRobot, CreateTarget, ClearGrid, StartSim, SizeChange
+    c.bind("<Button-1>", TargetClick)
+    if target:
+        c.itemconfig(target, fill = "white")
+        target = 0
+    CreateTarget['text'] = 'Подтвердить \n расположение \n цели'
+    CreateTarget['command'] = lambda:[c.unbind("<Button-1>"), ButCreateTarget()]
+    SizeChange['state'] = DISABLED
+    CreateRobot['state'] = DISABLED
+    CreateObstacles['state'] = DISABLED
+    ClearGrid['state'] = DISABLED
+    StartSim['state'] = DISABLED
+
+def EnvironmentClear():
+    global c, StartSim, robot, target, clicked
+    for i in clicked:
+        c.itemconfig(i, fill = "white")
+    clicked.clear()
+    c.itemconfig(robot, fill = "white")
+    robot = 0
+    c.itemconfig(target, fill = "white")
+    target = 0
+    StartSim['state'] = DISABLED
+
+def StartSimulation():
+    return 0
+
+def OccupancyGrid(high, length):
+    global c, CreateObstacles, CreateRobot, CreateTarget, ClearGrid, StartSim, SizeChange
+    root = Tk()
+    root.title('Карта местности')
+    OptionsFrame = Frame(root)
+    OptionsFrame.pack(expand = True, side = LEFT)
+    SizeChange = Button(OptionsFrame, text = 'Размер поля', command = lambda:[root.destroy(), SizeSettings()], width = 13)
+    SizeChange.pack(padx = 5, pady = 5)
+    CreateObstacles = Button(OptionsFrame, text = 'Расставить \n препятствия', command = PlaceObstacles, width = 13)
+    CreateObstacles.pack(padx = 5, pady = 5)
+    CreateRobot = Button(OptionsFrame, text = 'Поместить \n робота', command = PlaceRobot, width = 13)
+    CreateRobot.pack(padx = 5, pady = 5)
+    CreateTarget = Button(OptionsFrame, text = 'Установить \n цель', command = PlaceTarget, width = 13)
+    CreateTarget.pack(padx = 5, pady = 5)
+    ClearGrid = Button(OptionsFrame, text = 'Очистить поле', command = EnvironmentClear, width = 13)
+    ClearGrid.pack(padx = 5, pady = 5)
+    StartSim = Button(OptionsFrame, text = 'Начать расчет', state = DISABLED,command = StartSimulation, width = 13)
+    StartSim.pack(padx = 5, pady = 5)
+    size = 5
+    c = Canvas(root, width = length * size, height = high * size)
+    c.pack(side = LEFT)
+    for i in range(length):
+        for j in range(high):
+            c.create_rectangle(i * size, j * size, (i + 1) * size, (j + 1) * size, fill = "white")
+    
+    
+def CheckCor():
+
+    global error, errorLabel, errorOcc
+    if lengthText.get('1.0', END) == '\n' and highText.get('1.0', END) == '\n':
+        length = 128
+        high = 128
+        settings.destroy()
+        OccupancyGrid(high, length)
+    elif lengthText.get('1.0', END) != '\n' and highText.get('1.0', END) == '\n':
+        try:
+            length = int(lengthText.get('1.0', END))
+            high = 10
+            settings.destroy()
+            OccupancyGrid(high, length)
+        except Exception:
+            if not errorOcc:
+                errorOcc = True
+                error = Tk()
+                error.title('Ошибка!')
+                errorLabel = Label(error, height = 1, width = 30)
+                errorLabel.pack(padx = 5, pady = 5)
+                error.protocol("WM_DELETE_WINDOW", ErrorClose)
+            errorLabel['text'] = 'Введите целые числа!'
+    elif lengthText.get('1.0', END) == '\n' and highText.get('1.0', END) != '\n':
+        try:
+            high = int(highText.get('1.0', END))
+            length = 10
+            settings.destroy()
+            OccupancyGrid(high, length)
+        except Exception:
+            if not errorOcc:
+                errorOcc = True
+                error = Tk()
+                error.title('Ошибка!')
+                errorLabel = Label(error, height = 1, width = 30)
+                errorLabel.pack(padx = 5, pady = 5)
+                error.protocol("WM_DELETE_WINDOW", ErrorClose)
+            errorLabel['text'] = 'Введите целые числа!'
+    else:
+        try:
+            length = int(lengthText.get('1.0', END))
+            high = int(highText.get('1.0', END))
+            settings.destroy()
+            OccupancyGrid(high, length)
+        except Exception:
+            if not errorOcc:
+                errorOcc = True
+                error = Tk()
+                error.title('Ошибка!')
+                errorLabel = Label(error, height = 1, width = 30)
+                errorLabel.pack(padx = 5, pady = 5)
+                error.protocol("WM_DELETE_WINDOW", ErrorClose)
+            errorLabel['text'] = 'Введите целые числа!'
+    
+def SizeSettings():
+    global settings, lengthText, highText, robot, target, clicked, errorOcc
+    robot = 0
+    target = 0
+    clicked = set()
+    errorOcc = False
+    settings = Tk()
+    settings.title('Настройки')
+    settings.geometry('200x100')
+    lengthText = Text(settings, width = 5, height = 1)
+    lengthLabel = Label(settings, height = 1, text = 'Длина')
+    highText = Text(settings, width = 5, height = 1)
+    highLabel = Label(settings, height = 1, text = 'Ширина')
+    lengthText.place(x = 75, y = 5)
+    lengthLabel.place(x = 5, y = 5)
+    highText.place(x = 75, y = 35)
+    highLabel.place(x = 5, y = 35)
+    Btn = Button(settings, text = 'Начать', command = CheckCor)
+    Btn.place(x = 75, y = 65)
+    settings.mainloop()
+    
+SizeSettings()
