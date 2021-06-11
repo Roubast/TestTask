@@ -315,8 +315,8 @@ def OccupancyGrid():
     ClearGrid.pack(padx = 5, pady = 5)
     StartSim = Button(OptionsFrame, text = 'Начать расчет', state = DISABLED, command = functions, width = 13)
     StartSim.pack(padx = 5, pady = 5)
-    '''StopSim = Button(OptionsFrame, text = 'Прервать расчет', state = DISABLED, command = functions, width = 13)
-    StopSim.pack(padx = 5, pady = 5)'''
+    StopProgramm = Button(OptionsFrame, text = 'Выход', command = lambda:[root.destroy()], width = 13)
+    StopProgramm.pack(padx = 5, pady = 5)
     size = 10
     c = Canvas(root, width = length * size, height = high * size)
     c.pack(side = LEFT)
