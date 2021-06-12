@@ -475,9 +475,19 @@ def CheckCor():
     elif lengthText.get('1.0', END) != '\n' and highText.get('1.0', END) == '\n':
         try:
             length = int(lengthText.get('1.0', END))
-            high = 10
-            settings.destroy()
-            OccupancyGrid()
+            if length >= 2:
+                high = 10
+                settings.destroy()
+                OccupancyGrid()
+            else:
+                if not errorOcc:
+                    errorOcc = True
+                    error = Tk()
+                    error.title('Ошибка!')
+                    errorLabel = Label(error, height = 1, width = 30)
+                    errorLabel.pack(padx = 5, pady = 5)
+                    error.protocol("WM_DELETE_WINDOW", ErrorClose)
+                errorLabel['text'] = 'Введите целые числа, большие 1!'
         except Exception:
             if not errorOcc:
                 errorOcc = True
@@ -486,13 +496,23 @@ def CheckCor():
                 errorLabel = Label(error, height = 1, width = 30)
                 errorLabel.pack(padx = 5, pady = 5)
                 error.protocol("WM_DELETE_WINDOW", ErrorClose)
-            errorLabel['text'] = 'Введите целые числа!'
+            errorLabel['text'] = 'Введите целые числа, большие 1!'
     elif lengthText.get('1.0', END) == '\n' and highText.get('1.0', END) != '\n':
         try:
             high = int(highText.get('1.0', END))
-            length = 10
-            settings.destroy()
-            OccupancyGrid()
+            if high >= 2:
+                length = 10
+                settings.destroy()
+                OccupancyGrid()
+            else:
+                if not errorOcc:
+                    errorOcc = True
+                    error = Tk()
+                    error.title('Ошибка!')
+                    errorLabel = Label(error, height = 1, width = 30)
+                    errorLabel.pack(padx = 5, pady = 5)
+                    error.protocol("WM_DELETE_WINDOW", ErrorClose)
+                errorLabel['text'] = 'Введите целые числа, большие 1!'
         except Exception:
             if not errorOcc:
                 errorOcc = True
@@ -501,13 +521,23 @@ def CheckCor():
                 errorLabel = Label(error, height = 1, width = 30)
                 errorLabel.pack(padx = 5, pady = 5)
                 error.protocol("WM_DELETE_WINDOW", ErrorClose)
-            errorLabel['text'] = 'Введите целые числа!'
+            errorLabel['text'] = 'Введите целые числа, большие 1!'
     else:
         try:
             length = int(lengthText.get('1.0', END))
             high = int(highText.get('1.0', END))
-            settings.destroy()
-            OccupancyGrid()
+            if high >= 2 and length >=2:
+                settings.destroy()
+                OccupancyGrid()
+            else:
+                if not errorOcc:
+                    errorOcc = True
+                    error = Tk()
+                    error.title('Ошибка!')
+                    errorLabel = Label(error, height = 1, width = 30)
+                    errorLabel.pack(padx = 5, pady = 5)
+                    error.protocol("WM_DELETE_WINDOW", ErrorClose)
+                errorLabel['text'] = 'Введите целые числа, большие 1!'
         except Exception:
             if not errorOcc:
                 errorOcc = True
@@ -516,7 +546,7 @@ def CheckCor():
                 errorLabel = Label(error, height = 1, width = 30)
                 errorLabel.pack(padx = 5, pady = 5)
                 error.protocol("WM_DELETE_WINDOW", ErrorClose)
-            errorLabel['text'] = 'Введите целые числа!'
+            errorLabel['text'] = 'Введите целые числа, большие 1!'
     
 def SizeSettings():
     global settings, lengthText, highText, robot, target, clicked, errorOcc
