@@ -208,6 +208,9 @@ def RRT():
     for i in clicked:
         AvailableNum.remove(i)
     AvailableNum.remove(robot)
+    for i in AvailableNum:
+        if i + 1 != target:
+            c.itemconfig(i + 1, fill = "white")
     OK = False
     while not OK:
         ind = random.choice(AvailableNum)
@@ -301,6 +304,9 @@ def RRT_Star():
     for i in clicked:
         AvailableNum.remove(i)
     AvailableNum.remove(robot)
+    for i in AvailableNum:
+        if i + 1 != target:
+            c.itemconfig(i + 1, fill = "white")
     OK = False
     while not OK:
         ind = random.choice(AvailableNum)
