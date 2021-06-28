@@ -204,13 +204,13 @@ def RRT():
     Distances[robot] = 0
     Nodes = set()
     Nodes.add(robot)
-    AvailableNum = [i for i in range(high * length)]
+    AvailableNum = [i + 1 for i in range(high * length)]
     for i in clicked:
         AvailableNum.remove(i)
     AvailableNum.remove(robot)
     for i in AvailableNum:
-        if i + 1 != target:
-            c.itemconfig(i + 1, fill = "white")
+        if i != target:
+            c.itemconfig(i, fill = "white")
     OK = False
     while not OK:
         ind = random.choice(AvailableNum)
@@ -300,13 +300,13 @@ def RRT_Star():
     Distances[robot] = 0
     Nodes = set()
     Nodes.add(robot)
-    AvailableNum = [i for i in range(high * length)]
+    AvailableNum = [i + 1 for i in range(high * length)]
     for i in clicked:
         AvailableNum.remove(i)
     AvailableNum.remove(robot)
     for i in AvailableNum:
-        if i + 1 != target:
-            c.itemconfig(i + 1, fill = "white")
+        if i != target:
+            c.itemconfig(i, fill = "white")
     OK = False
     while not OK:
         ind = random.choice(AvailableNum)
